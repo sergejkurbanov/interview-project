@@ -3,6 +3,7 @@ import validator from 'validator'
 import bcrypt from 'bcryptjs'
 import jwt from 'jsonwebtoken'
 import uniqueValidator from 'mongoose-unique-validator'
+import ErrorHandler from '../helpers/error'
 
 const userSchema = mongoose.Schema({
   name: {
@@ -78,6 +79,26 @@ userSchema.statics.findByCredentials = async (email, password) => {
   if (!isPasswordMatch) throw new Error('Invalid login credentials')
 
   return user
+}
+
+userSchema.statics.findByTokenAndClearIt = async refreshToken => {
+  try {
+    const data = jwt.verify(refreshToken, process.env.REFRESH_TOKEN_SECRET)
+    const user = await User.findOne({
+      _id: data.id,
+      'tokens.token': refreshToken,
+    })
+
+    if (!user) throw new Error()
+
+    // Remove the old refresh token and save the user
+    user.tokens = user.tokens.filter(token => token.token !== refreshToken)
+    await user.save()
+
+    return user
+  } catch (err) {
+    throw new ErrorHandler(401, 'Not authorized to access this resource')
+  }
 }
 
 const User = mongoose.model('User', userSchema)

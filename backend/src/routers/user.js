@@ -36,26 +36,10 @@ router.post('/log-in', async (req, res, next) => {
 })
 
 // Protected routes
-router.get('/me', auth, async (req, res) => {
-  // Get the current user
-  res.send(req.user)
-})
-
 router.post('/log-out', auth, async (req, res, next) => {
-  const { refreshToken } = req.cookies
-
   try {
-    const data = jwt.verify(refreshToken, process.env.REFRESH_TOKEN_SECRET)
-    const user = await User.findOne({
-      _id: data.id,
-      'tokens.token': refreshToken,
-    })
-
-    if (!user) throw new Error()
-
-    // Remove the old refresh token
-    user.tokens = user.tokens.filter(token => token.token !== refreshToken)
-    await user.save()
+    // Clear the user's token
+    User.findByTokenAndClearIt(req.cookies.refreshToken)
 
     res
       .clearCookie('token')
@@ -67,19 +51,9 @@ router.post('/log-out', auth, async (req, res, next) => {
 })
 
 router.get('/refresh', async (req, res, next) => {
-  const { refreshToken } = req.cookies
-
   try {
-    const data = jwt.verify(refreshToken, process.env.REFRESH_TOKEN_SECRET)
-    const user = await User.findOne({
-      _id: data.id,
-      'tokens.token': refreshToken,
-    })
-
-    if (!user) throw new Error()
-
-    // Remove the old refresh token
-    user.tokens = user.tokens.filter(token => token.token !== refreshToken)
+    // Get the user and clear his token
+    const user = await User.findByTokenAndClearIt(req.cookies.refreshToken)
     // Generate new tokens
     const [token, newRefreshToken] = await user.generateAuthTokens()
 
