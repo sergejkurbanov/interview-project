@@ -6,7 +6,7 @@ import connectDb from './db'
 import handleError from './middleware/error'
 
 // Import routes
-import userRouter from './routers/user'
+import userRouter from './routers/users'
 
 // Initialize
 const app = express()
