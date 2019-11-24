@@ -1,4 +1,6 @@
 import express from 'express'
+import cors from 'cors'
+import cookieParser from 'cookie-parser'
 import morgan from 'morgan'
 import connectDb from './db'
 import handleError from './middleware/error'
@@ -14,6 +16,8 @@ const port = process.env.PORT
 // Middleware
 app.use(morgan('dev'))
 app.use(express.json())
+app.use(cors({ credentials: true, origin: 'http://localhost:3000' }))
+app.use(cookieParser())
 
 // Route middleware
 app.use('/api/users', userRouter)

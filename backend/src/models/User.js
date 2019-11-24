@@ -51,15 +51,22 @@ userSchema.pre('save', async function(next) {
   next()
 })
 
-userSchema.methods.generateAuthToken = async function() {
-  // Generate an auth token for the user
+userSchema.methods.generateAuthTokens = async function() {
+  // Generate auth tokens for the user
   const user = this
-  const token = jwt.sign({ _id: user._id }, process.env.JWT_KEY)
-  user.tokens = user.tokens.concat({ token })
+  const id = user._id
+  const token = jwt.sign({ id }, process.env.JWT_SECRET, {
+    expiresIn: 5, // 15 minutes expiration date
+    // expiresIn: 15 * 60, // 15 minutes expiration date
+  })
+  const refreshToken = jwt.sign({ id }, process.env.REFRESH_TOKEN_SECRET, {
+    expiresIn: 10, // 7 days expiration date
+    // expiresIn: 7 * 24 * 60 * 60, // 7 days expiration date
+  })
+  user.tokens = user.tokens.concat({ token: refreshToken })
 
   await user.save()
-
-  return token
+  return [token, refreshToken]
 }
 
 userSchema.statics.findByCredentials = async (email, password) => {

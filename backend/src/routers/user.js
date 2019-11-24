@@ -1,7 +1,8 @@
 import express from 'express'
+import jwt from 'jsonwebtoken'
 import User from '../models/User'
-import auth from '../middleware/auth'
 import ErrorHandler from '../helpers/error'
+import auth from '../middleware/auth'
 
 const router = express.Router()
 
@@ -11,11 +12,10 @@ router.post('/sign-up', async (req, res, next) => {
   try {
     const user = new User(req.body)
     await user.save()
-    const token = await user.generateAuthToken()
 
-    res.status(201).send({ user, token })
+    res.status(201).send({ user })
   } catch (error) {
-    next(new ErrorHandler(400, error.message))
+    next(new ErrorHandler(400, error.errors))
   }
 })
 
@@ -24,9 +24,12 @@ router.post('/log-in', async (req, res, next) => {
   try {
     const { email, password } = req.body
     const user = await User.findByCredentials(email, password)
-    const token = await user.generateAuthToken()
+    const [token, refreshToken] = await user.generateAuthTokens()
 
-    res.send({ user, token })
+    res
+      .cookie('token', token, { httpOnly: true })
+      .cookie('refreshToken', refreshToken, { httpOnly: true })
+      .send({ user })
   } catch (error) {
     next(new ErrorHandler(400, error.message))
   }
@@ -38,29 +41,54 @@ router.get('/me', auth, async (req, res) => {
   res.send(req.user)
 })
 
-router.post('/me/logout', auth, async (req, res, next) => {
-  // Log user out of the application
+router.post('/log-out', auth, async (req, res, next) => {
+  const { refreshToken } = req.cookies
+
   try {
-    req.user.tokens = req.user.tokens.filter(token => token.token !== req.token)
+    const data = jwt.verify(refreshToken, process.env.REFRESH_TOKEN_SECRET)
+    const user = await User.findOne({
+      _id: data.id,
+      'tokens.token': refreshToken,
+    })
 
-    await req.user.save()
+    if (!user) throw new Error()
 
-    res.send()
-  } catch (error) {
-    next(new ErrorHandler(500, error.message))
+    // Remove the old refresh token
+    user.tokens = user.tokens.filter(token => token.token !== refreshToken)
+    await user.save()
+
+    res
+      .clearCookie('token')
+      .clearCookie('refreshToken')
+      .send()
+  } catch (err) {
+    next(new ErrorHandler(401, 'Not authorized to access this resource'))
   }
 })
 
-router.post('/me/logout-all', auth, async (req, res, next) => {
-  // Log user out of all devices
+router.get('/refresh', async (req, res, next) => {
+  const { refreshToken } = req.cookies
+
   try {
-    req.user.tokens = []
+    const data = jwt.verify(refreshToken, process.env.REFRESH_TOKEN_SECRET)
+    const user = await User.findOne({
+      _id: data.id,
+      'tokens.token': refreshToken,
+    })
 
-    await req.user.save()
+    if (!user) throw new Error()
 
-    res.send()
-  } catch (error) {
-    next(new ErrorHandler(500, error.message))
+    // Remove the old refresh token
+    user.tokens = user.tokens.filter(token => token.token !== refreshToken)
+    // Generate new tokens
+    const [token, newRefreshToken] = await user.generateAuthTokens()
+
+    res
+      .cookie('token', token, { httpOnly: true })
+      .cookie('refreshToken', newRefreshToken, { httpOnly: true })
+      .send({ user })
+  } catch (err) {
+    next(new ErrorHandler(401, 'Not authorized to access this resource'))
   }
 })
 

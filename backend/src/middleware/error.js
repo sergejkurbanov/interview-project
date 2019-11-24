@@ -2,7 +2,7 @@
 const handleError = (err, req, res, next) => {
   const { statusCode, message } = err
 
-  console.err(err)
+  console.error(err)
 
   res.status(statusCode).json({
     status: 'error',

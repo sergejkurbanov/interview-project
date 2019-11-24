@@ -2,7 +2,7 @@ import React, { useState } from 'react'
 import { toast } from 'react-toastify'
 import styled from 'styled-components'
 import { useDispatch, useSelector } from 'react-redux'
-import { Link } from 'react-router-dom'
+import { Link, useHistory } from 'react-router-dom'
 import { signupUser } from 'redux/modules/auth/actions'
 import Loading from 'components/Loading'
 import TextField from '@material-ui/core/TextField'
@@ -11,11 +11,13 @@ import Typography from '@material-ui/core/Typography'
 import Box from '@material-ui/core/Box'
 
 const SignupForm = () => {
+  const [name, setName] = useState('')
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
   const [confirmPassword, setConfirmPassword] = useState('')
   const isLoading = useSelector(state => state.auth.isSignupLoading)
   const dispatch = useDispatch()
+  const history = useHistory()
 
   const handleSubmit = e => {
     e.preventDefault()
@@ -26,7 +28,7 @@ const SignupForm = () => {
       )
     }
 
-    return dispatch(signupUser({ email, password }))
+    return dispatch(signupUser({ name, email, password, history }))
   }
 
   return (
@@ -36,7 +38,19 @@ const SignupForm = () => {
       </Typography>
 
       <TextField
+        required
+        value={name}
+        onChange={e => setName(e.target.value)}
+        label="Name"
+        fullWidth
+        autoFocus
+        margin="normal"
+        variant="outlined"
+      />
+
+      <TextField
         type="email"
+        required
         value={email}
         onChange={e => setEmail(e.target.value)}
         label="Email"
@@ -48,6 +62,7 @@ const SignupForm = () => {
 
       <TextField
         type="password"
+        required
         value={password}
         onChange={e => setPassword(e.target.value)}
         label="Password"
@@ -58,6 +73,7 @@ const SignupForm = () => {
 
       <TextField
         type="password"
+        required
         value={confirmPassword}
         onChange={e => setConfirmPassword(e.target.value)}
         label="Confirm password"
@@ -81,7 +97,6 @@ const SignupForm = () => {
         variant="contained"
         color="primary"
         className="form__button"
-        onClick={handleSubmit}
         disabled={isLoading}
       >
         {isLoading ? (

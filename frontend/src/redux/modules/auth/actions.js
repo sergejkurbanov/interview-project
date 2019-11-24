@@ -1,8 +1,8 @@
 import * as types from './types'
 
-export const signupUser = ({ email, password }) => ({
+export const signupUser = ({ name, email, password, history }) => ({
   type: types.SIGNUP_USER,
-  payload: { email, password },
+  payload: { name, email, password, history },
 })
 
 export const loginUser = ({ email, password }) => ({
@@ -10,6 +10,7 @@ export const loginUser = ({ email, password }) => ({
   payload: { email, password },
 })
 
-export const logoutUser = () => ({
+export const logoutUser = (payload = {}) => ({
   type: types.LOGOUT_USER,
+  payload: { skipApi: payload.skipApi },
 })

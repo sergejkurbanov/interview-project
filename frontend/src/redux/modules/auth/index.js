@@ -19,9 +19,10 @@ const authReducer = (state = defaultState, { type, payload }) => {
     }
 
     case types.SIGNUP_USER_ERROR: {
-      toast.error(
-        payload.error.message || 'Error signing up. Please try again later.',
-      )
+      const { error } = payload
+      const message = error.response && error.response.data.message
+
+      toast.error(message || 'Error signing up. Please try again later.')
       return { ...state, isSignupLoading: false }
     }
 
@@ -29,18 +30,20 @@ const authReducer = (state = defaultState, { type, payload }) => {
     case types.LOGIN_USER:
       return { ...state, isLoginLoading: true }
 
-    case types.LOGIN_USER_SUCCESS:
+    case types.LOGIN_USER_SUCCESS: {
       return { ...state, current: payload.user, isLoginLoading: false }
+    }
 
     case types.LOGIN_USER_ERROR: {
-      toast.error(
-        payload.error.message || 'Error signing in. Please try again later.',
-      )
+      const { error } = payload
+      const message = error.response && error.response.data.message
+
+      toast.error(message || 'Error signing in. Please try again later.')
       return { ...state, isLoginLoading: false }
     }
 
     // Logout actions
-    case types.LOGOUT_USER_SUCCESS:
+    case types.LOGOUT_USER:
       return { ...state, current: null }
 
     default:

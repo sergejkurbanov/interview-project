@@ -21,13 +21,14 @@ const LoginForm = () => {
   }
 
   return (
-    <LoginFormWrapper boxShadow={2} onSubmit={handleSubmit}>
+    <LoginFormWrapper onSubmit={handleSubmit}>
       <Typography variant="h2" gutterBottom>
         Log In
       </Typography>
 
       <TextField
         type="email"
+        required
         value={email}
         onChange={e => setEmail(e.target.value)}
         label="Email"
@@ -39,6 +40,7 @@ const LoginForm = () => {
 
       <TextField
         type="password"
+        required
         value={password}
         onChange={e => setPassword(e.target.value)}
         label="Password"
@@ -62,7 +64,6 @@ const LoginForm = () => {
         variant="contained"
         color="primary"
         className="form__button"
-        onClick={handleSubmit}
         disabled={isLoading}
       >
         {isLoading ? (

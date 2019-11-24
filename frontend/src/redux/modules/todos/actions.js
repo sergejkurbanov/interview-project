@@ -12,4 +12,4 @@ export const toggleTodo = id => ({
 
 export const deleteTodo = id => ({ type: types.DELETE_TODO, payload: { id } })
 
-export const getTodos = user => ({ type: types.GET_TODOS, payload: { user } })
+export const getTodos = () => ({ type: types.GET_TODOS })

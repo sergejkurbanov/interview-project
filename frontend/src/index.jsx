@@ -13,11 +13,13 @@ import { ThemeProvider } from 'styled-components'
 import { ToastContainer } from 'react-toastify'
 import { Provider as StoreProvider } from 'react-redux'
 import { PersistGate } from 'redux-persist/integration/react'
+import { setAxiosInterceptors } from 'helpers/axios'
 import { store, persistor } from './redux/store'
 import 'react-toastify/dist/ReactToastify.css'
 import 'typeface-roboto'
 import App from './containers/App'
 
+// Set up the defaults for our theme
 const defaultTheme = createMuiTheme({
   palette: {
     type: 'dark',
@@ -31,6 +33,10 @@ const defaultTheme = createMuiTheme({
   },
 })
 
+// Inject store into axios interceptors
+setAxiosInterceptors(store)
+
+// Render the app
 ReactDOM.render(
   <StylesProvider injectFirst>
     <MuiThemeProvider theme={defaultTheme}>

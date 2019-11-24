@@ -15,9 +15,10 @@ const todosReducer = (state = defaultState, { type, payload }) => {
       return { ...state, all: payload.data, isLoading: false }
 
     case types.GET_TODOS_ERROR: {
-      toast.error(
-        payload.error.message || 'Error loading todos. Please try again later.',
-      )
+      const { error } = payload
+      const message = error.response && error.response.data.message
+
+      toast.error(message || 'Error loading todos. Please try again later.')
       return { ...state, all: payload.data, isLoading: false }
     }
 

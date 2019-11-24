@@ -1,38 +1,39 @@
 import { put, call } from 'redux-saga/effects'
-import { eventChannel } from 'redux-saga'
-import todosApi from 'api/todos'
+import axios from 'helpers/axios'
 import * as types from './types'
 
-export function* deleteTodo({ payload }) {
+export function* deleteTodo() {
   try {
-    yield call(() => todosApi.deleteTodo(payload.id))
+    yield call(() => {})
     yield put({ type: types.DELETE_TODO_SUCCESS })
   } catch (error) {
     yield put({ type: types.DELETE_TODO_ERROR, payload: { error } })
   }
 }
 
-export function* toggleTodo({ payload }) {
+export function* toggleTodo() {
   try {
-    yield call(() => todosApi.toggleTodo(payload.id))
+    yield call(() => {})
     yield put({ type: types.COMPLETE_TODO_SUCCESS })
   } catch (error) {
     yield put({ type: types.COMPLETE_TODO_ERROR, payload: { error } })
   }
 }
 
-export function* createTodo({ payload }) {
+export function* createTodo() {
   try {
-    yield call(() => todosApi.createTodo(payload.text))
+    yield call(() => {})
     yield put({ type: types.CREATE_TODO_SUCCESS })
   } catch (error) {
     yield put({ type: types.CREATE_TODO_ERROR, payload: { error } })
   }
 }
 
-export const createGetTodosChannel = user =>
-  eventChannel(emit => {
-    const unsubscribe = todosApi.createGetTodosSocket(user, emit)
-
-    return unsubscribe
-  })
+export function* getTodos() {
+  try {
+    yield call(axios.get, '/users/me')
+    yield put({ type: types.GET_TODOS_SUCCESS, payload: { data: 'hi' } })
+  } catch (error) {
+    yield put({ type: types.GET_TODOS_ERROR, payload: { error } })
+  }
+}
