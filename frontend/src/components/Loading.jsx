@@ -11,7 +11,13 @@ const Loading = ({ isLoading, ...rest }) => (
 
 Loading.propTypes = {
   isLoading: PropTypes.bool.isRequired,
-  size: PropTypes.number.isRequired,
+  size: PropTypes.number,
+  thickness: PropTypes.number,
+}
+
+Loading.defaultProps = {
+  size: 24,
+  thickness: 8,
 }
 
 export default Loading

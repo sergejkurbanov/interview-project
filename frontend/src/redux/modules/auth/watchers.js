@@ -14,6 +14,15 @@ function* watchLogoutUser() {
   yield takeLeading(types.LOGOUT_USER, workers.logoutUser)
 }
 
-const authSagas = [watchSignupUser, watchLoginUser, watchLogoutUser]
+function* watchGetSelf() {
+  yield takeLeading(types.GET_SELF, workers.getSelf)
+}
+
+const authSagas = [
+  watchSignupUser,
+  watchLoginUser,
+  watchLogoutUser,
+  watchGetSelf,
+]
 
 export default authSagas

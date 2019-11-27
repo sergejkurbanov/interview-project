@@ -4,9 +4,11 @@ import cookieParser from 'cookie-parser'
 import morgan from 'morgan'
 import connectDb from './db'
 import handleError from './middleware/error'
+import auth from './middleware/auth'
 
 // Import routes
 import userRouter from './routers/users'
+import tripRouter from './routers/trips'
 
 // Initialize
 const app = express()
@@ -21,6 +23,7 @@ app.use(cookieParser())
 
 // Route middleware
 app.use('/api/users', userRouter)
+app.use('/api/trips', auth, tripRouter)
 
 // Error middleware
 app.use(handleError)

@@ -8,28 +8,28 @@ import {
 } from '@material-ui/core/styles'
 import CssBaseline from '@material-ui/core/CssBaseline'
 import blue from '@material-ui/core/colors/blue'
-import orange from '@material-ui/core/colors/orange'
+import amber from '@material-ui/core/colors/amber'
 import { ThemeProvider } from 'styled-components'
 import { ToastContainer } from 'react-toastify'
 import { Provider as StoreProvider } from 'react-redux'
 import { PersistGate } from 'redux-persist/integration/react'
 import { setAxiosInterceptors } from 'helpers/axios'
-import { store, persistor } from './redux/store'
+import { store, persistor } from 'redux/store'
 import 'react-toastify/dist/ReactToastify.css'
 import 'typeface-roboto'
-import App from './containers/App'
+import App from 'components/App'
 
 // Set up the defaults for our theme
 const defaultTheme = createMuiTheme({
   palette: {
     type: 'dark',
     primary: blue,
-    secondary: orange,
+    secondary: amber,
   },
   typography: {
-    h2: {
-      fontSize: 36,
-    },
+    h1: { fontSize: 48 },
+    h2: { fontSize: 36 },
+    h3: { fontSize: 24 },
   },
 })
 

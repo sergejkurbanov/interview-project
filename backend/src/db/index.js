@@ -7,6 +7,7 @@ const connectDb = async callback => {
       useNewUrlParser: true,
       useCreateIndex: true,
       useUnifiedTopology: true,
+      useFindAndModify: false,
     })
 
     callback()

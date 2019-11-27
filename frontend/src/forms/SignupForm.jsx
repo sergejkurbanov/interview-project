@@ -100,7 +100,7 @@ const SignupForm = () => {
         disabled={isLoading}
       >
         {isLoading ? (
-          <Loading size={24} thickness={8} isLoading={isLoading} />
+          <Loading isLoading={isLoading} />
         ) : (
           <Typography>Sign up</Typography>
         )}

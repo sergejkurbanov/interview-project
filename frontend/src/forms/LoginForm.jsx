@@ -66,11 +66,7 @@ const LoginForm = () => {
         className="form__button"
         disabled={isLoading}
       >
-        {isLoading ? (
-          <Loading size={24} thickness={8} isLoading />
-        ) : (
-          <Typography>Log in</Typography>
-        )}
+        {isLoading ? <Loading isLoading /> : <Typography>Log in</Typography>}
       </Button>
     </LoginFormWrapper>
   )

@@ -3,45 +3,52 @@ import validator from 'validator'
 import bcrypt from 'bcryptjs'
 import jwt from 'jsonwebtoken'
 import uniqueValidator from 'mongoose-unique-validator'
+import { tripSchema } from './Trip'
 import ErrorHandler from '../helpers/error'
 
-const userSchema = mongoose.Schema({
-  name: {
-    type: String,
-    required: 'Name is required',
-    trim: true,
-  },
-  email: {
-    type: String,
-    required: 'Email is required',
-    unique: 'Email already exists',
-    lowercase: true,
-    validate: {
-      validator: value => validator.isEmail(value),
-      msg: 'Enter a valid email address.',
+const userSchema = mongoose.Schema(
+  {
+    name: {
+      type: String,
+      required: 'Name is required',
+      trim: true,
     },
-  },
-  password: {
-    type: String,
-    required: 'Password is required',
-    minLength: 6,
-  },
-  date: {
-    type: Date,
-    defaults: Date.now,
-  },
-  tokens: [
-    {
-      token: {
-        type: String,
-        required: true,
+    email: {
+      type: String,
+      required: 'Email is required',
+      unique: 'Email already exists',
+      lowercase: true,
+      validate: {
+        validator: value => validator.isEmail(value),
+        msg: 'Enter a valid email address.',
       },
     },
-  ],
-})
+    password: {
+      type: String,
+      required: 'Password is required',
+      minLength: 6,
+    },
+    date: {
+      type: Date,
+      defaults: Date.now,
+    },
+    tokens: [
+      {
+        token: {
+          type: String,
+          required: true,
+        },
+      },
+    ],
+    trips: [tripSchema],
+  },
+  { timestamps: true },
+)
 
+// Schema plugins
 userSchema.plugin(uniqueValidator)
 
+// Schema hooks
 userSchema.pre('save', async function(next) {
   // Hash the password before saving the user
   const user = this
@@ -52,24 +59,34 @@ userSchema.pre('save', async function(next) {
   next()
 })
 
+// Schema methods
 userSchema.methods.generateAuthTokens = async function() {
   // Generate auth tokens for the user
   const user = this
   const id = user._id
   const token = jwt.sign({ id }, process.env.JWT_SECRET, {
-    expiresIn: 5, // 15 minutes expiration date
-    // expiresIn: 15 * 60, // 15 minutes expiration date
+    expiresIn: 15 * 60, // 15 minutes expiration date
   })
   const refreshToken = jwt.sign({ id }, process.env.REFRESH_TOKEN_SECRET, {
-    expiresIn: 10, // 7 days expiration date
-    // expiresIn: 7 * 24 * 60 * 60, // 7 days expiration date
+    expiresIn: 7 * 24 * 60 * 60, // 7 days expiration date
   })
   user.tokens = user.tokens.concat({ token: refreshToken })
 
   await user.save()
+
   return [token, refreshToken]
 }
 
+userSchema.methods.toClient = function() {
+  return {
+    id: this._id,
+    name: this.name,
+    email: this.email,
+    trips: this.trips.map(trip => trip.toClient()),
+  }
+}
+
+// Schema statics
 userSchema.statics.findByCredentials = async (email, password) => {
   // Search for a user by email and password.
   const user = await User.findOne({ email })

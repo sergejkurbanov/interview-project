@@ -14,3 +14,5 @@ export const logoutUser = (payload = {}) => ({
   type: types.LOGOUT_USER,
   payload: { skipApi: payload.skipApi },
 })
+
+export const getSelf = () => ({ type: types.GET_SELF })
