@@ -25,8 +25,8 @@ const TripPrint = ({ trips }) => {
     tripsStartingNextMonth.length > 0 && (
       <Box mt={2} display="flex" direction="row" alignItems="center">
         <Typography>
-          Put your trips on your fridge! Don&apos;t miss a single trip in the
-          next 30 days.
+          Don&apos;t miss a single trip in the next 30 days. Put your future
+          trips on your fridge!
         </Typography>
         <ReactToPrint
           trigger={() => <Button color="primary">Print</Button>}

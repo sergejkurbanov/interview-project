@@ -2,7 +2,7 @@ import React, { useState } from 'react'
 import styled from 'styled-components'
 import PropTypes from 'prop-types'
 import { useDispatch } from 'react-redux'
-import { deleteTrip, deleteUserTrip } from 'redux/modules/trips/actions'
+import { deleteUser } from 'redux/modules/users/actions'
 import Button from '@material-ui/core/Button'
 import Box from '@material-ui/core/Box'
 import Typography from '@material-ui/core/Typography'
@@ -16,15 +16,14 @@ import red from '@material-ui/core/colors/red'
 
 const redTheme = createMuiTheme({ palette: { primary: red } })
 
-const DeleteTrip = ({ id, destination, userId }) => {
+const DeleteUser = ({ id, name }) => {
   const [open, setOpen] = useState(false)
   const dispatch = useDispatch()
 
   const handleOpen = () => setOpen(true)
   const handleClose = () => setOpen(false)
   const handleDelete = () => {
-    const payload = { userId, tripId: id }
-    dispatch(userId ? deleteUserTrip(payload) : deleteTrip(payload))
+    dispatch(deleteUser({ id }))
     handleClose()
   }
 
@@ -41,7 +40,7 @@ const DeleteTrip = ({ id, destination, userId }) => {
         onClose={handleClose}
         aria-labelledby="Delete trip modal"
       >
-        <DialogTitle>Deleting trip to {destination}</DialogTitle>
+        <DialogTitle>Deleting user {name}</DialogTitle>
         <DialogContent>
           <Box mb={4}>
             <DialogContentText id="alert-dialog-description">
@@ -68,19 +67,15 @@ const DeleteTrip = ({ id, destination, userId }) => {
     </>
   )
 }
+
 const DialogWrapper = styled(Dialog)`
   margin: auto;
   max-width: 700px;
 `
 
-DeleteTrip.propTypes = {
+DeleteUser.propTypes = {
   id: PropTypes.string.isRequired,
-  destination: PropTypes.string.isRequired,
-  userId: PropTypes.string,
+  name: PropTypes.string.isRequired,
 }
 
-DeleteTrip.defaultProps = {
-  userId: '',
-}
-
-export default DeleteTrip
+export default DeleteUser

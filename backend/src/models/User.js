@@ -10,13 +10,13 @@ const userSchema = mongoose.Schema(
   {
     name: {
       type: String,
-      required: 'Name is required',
+      required: 'Name is required.',
       trim: true,
     },
     email: {
       type: String,
       required: 'Email is required',
-      unique: 'Email already exists',
+      unique: 'Email already exists.',
       lowercase: true,
       validate: {
         validator: value => validator.isEmail(value),
@@ -25,7 +25,7 @@ const userSchema = mongoose.Schema(
     },
     password: {
       type: String,
-      required: 'Password is required',
+      required: 'Password is required.',
       minLength: 6,
     },
     date: {
@@ -41,6 +41,11 @@ const userSchema = mongoose.Schema(
       },
     ],
     trips: [tripSchema],
+    role: {
+      type: String,
+      default: 'BASIC',
+      enum: ['BASIC', 'MANAGER', 'ADMIN'],
+    },
   },
   { timestamps: true },
 )
@@ -63,8 +68,8 @@ userSchema.pre('save', async function(next) {
 userSchema.methods.generateAuthTokens = async function() {
   // Generate auth tokens for the user
   const user = this
-  const id = user._id
-  const token = jwt.sign({ id }, process.env.JWT_SECRET, {
+  const { _id: id, role } = user
+  const token = jwt.sign({ id, role }, process.env.JWT_SECRET, {
     expiresIn: 15 * 60, // 15 minutes expiration date
   })
   const refreshToken = jwt.sign({ id }, process.env.REFRESH_TOKEN_SECRET, {
@@ -77,12 +82,13 @@ userSchema.methods.generateAuthTokens = async function() {
   return [token, refreshToken]
 }
 
-userSchema.methods.toClient = function() {
+userSchema.methods.toClient = function(omitTrips) {
   return {
     id: this._id,
     name: this.name,
     email: this.email,
-    trips: this.trips.map(trip => trip.toClient()),
+    trips: omitTrips ? undefined : this.trips.map(trip => trip.toClient()),
+    role: this.role,
   }
 }
 
@@ -114,7 +120,9 @@ userSchema.statics.findByTokenAndClearIt = async refreshToken => {
 
     return user
   } catch (err) {
-    throw new ErrorHandler(401, 'Not authorized to access this resource')
+    throw new ErrorHandler(401, {
+      message: 'Not authorized to access this resource',
+    })
   }
 }
 

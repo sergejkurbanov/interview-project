@@ -23,7 +23,7 @@ app.use(cookieParser())
 
 // Route middleware
 app.use('/api/users', userRouter)
-app.use('/api/trips', auth, tripRouter)
+app.use('/api/trips', auth(), tripRouter)
 
 // Error middleware
 app.use(handleError)

@@ -1,5 +1,6 @@
 import { combineReducers } from 'redux'
-import trips from './trips'
 import auth from './auth'
+import trips from './trips'
+import users from './users'
 
-export default combineReducers({ trips, auth })
+export default combineReducers({ auth, trips, users })

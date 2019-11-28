@@ -12,7 +12,7 @@ import Box from '@material-ui/core/Box'
 import TripForm from 'forms/TripForm'
 import DeleteTrip from 'components/DeleteTrip'
 
-const TripList = ({ trips }) => {
+const TripList = ({ trips, userId }) => {
   const [expanded, setExpanded] = useState(false)
   const handleChange = panel => (_, isExpanded) => {
     setExpanded(isExpanded ? panel : false)
@@ -33,27 +33,34 @@ const TripList = ({ trips }) => {
             onChange={handleChange(trip.id)}
           >
             <ExpansionPanelSummary expandIcon={<ExpandMoreIcon />}>
-              <Box style={{ flexBasis: '80%' }}>
+              <Box
+                display="flex"
+                alignItems="center"
+                style={{ flexBasis: '80%' }}
+              >
                 <Typography>{trip.destination}</Typography>
               </Box>
+
+              {/* Displays the days left for upcoming trips */}
               {inDays > 0 && (
                 <Box display="flex" flexDirection="row" alignItems="center">
                   <FlightTakeoffIcon
                     color="primary"
                     style={{ fontSize: 30, marginRight: 10 }}
                   />
-                  <Typography style={{ whiteSpace: 'nowrap' }}>
-                    {inDays} days
-                  </Typography>
+                  <Typography noWrap>{inDays} days</Typography>
                 </Box>
               )}
             </ExpansionPanelSummary>
+
             <ExpansionPanelDetails>
+              {/* Trip comment */}
               <Box dislay="flex" width="100%" flexDirection="column">
                 <Box p={1} mb={3} borderRadius={4} bgcolor="primary.main">
                   <Typography>{trip.comment}</Typography>
                 </Box>
 
+                {/* Trip start and end dates */}
                 <Box
                   ml={1}
                   mb={1}
@@ -85,12 +92,17 @@ const TripList = ({ trips }) => {
                   </Typography>
                 </Box>
 
+                {/* Trip actions */}
                 <Box mt={4}>
                   <Box component="span" mr={2}>
-                    <TripForm trip={trip} />
+                    <TripForm trip={trip} userId={userId} />
                   </Box>
 
-                  <DeleteTrip id={trip.id} destination={trip.destination} />
+                  <DeleteTrip
+                    id={trip.id}
+                    destination={trip.destination}
+                    userId={userId}
+                  />
                 </Box>
               </Box>
             </ExpansionPanelDetails>
@@ -110,7 +122,13 @@ TripList.propTypes = {
       endDate: PropTypes.string,
       comment: PropTypes.string,
     }),
-  ).isRequired,
+  ),
+  userId: PropTypes.string,
+}
+
+TripList.defaultProps = {
+  trips: [],
+  userId: '',
 }
 
 export default TripList

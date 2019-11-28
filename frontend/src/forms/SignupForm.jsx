@@ -55,7 +55,6 @@ const SignupForm = () => {
         onChange={e => setEmail(e.target.value)}
         label="Email"
         fullWidth
-        autoFocus
         margin="normal"
         variant="outlined"
       />

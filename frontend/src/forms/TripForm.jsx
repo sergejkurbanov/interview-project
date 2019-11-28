@@ -3,7 +3,12 @@ import styled from 'styled-components'
 import moment from 'moment'
 import PropTypes from 'prop-types'
 import { useDispatch, useSelector } from 'react-redux'
-import { createTrip, updateTrip } from 'redux/modules/trips/actions'
+import {
+  createTrip,
+  createUserTrip,
+  updateTrip,
+  updateUserTrip,
+} from 'redux/modules/trips/actions'
 import Loading from 'components/Loading'
 import TextField from '@material-ui/core/TextField'
 import Button from '@material-ui/core/Button'
@@ -16,7 +21,7 @@ import {
 } from '@material-ui/pickers'
 import { toast } from 'react-toastify'
 
-const TripForm = ({ trip }) => {
+const TripForm = ({ trip, userId }) => {
   const isUpdate = !!trip.id
   const handleDate = date => (date ? moment(date) : null)
 
@@ -61,14 +66,17 @@ const TripForm = ({ trip }) => {
   const handleSubmit = e => {
     e.preventDefault()
 
+    // Check that the dates are chronologically correct
     if (endDate.isBefore(startDate)) {
       return toast.error(
         'Make sure that the Start date comes before the End date.',
       )
     }
 
+    // Construct the payload
     const payload = {
-      id: trip.id,
+      userId,
+      tripId: trip.id,
       destination,
       startDate,
       endDate,
@@ -79,6 +87,11 @@ const TripForm = ({ trip }) => {
       },
     }
 
+    if (userId) {
+      return dispatch(
+        isUpdate ? updateUserTrip(payload) : createUserTrip(payload),
+      )
+    }
     return dispatch(isUpdate ? updateTrip(payload) : createTrip(payload))
   }
 
@@ -212,6 +225,7 @@ TripForm.propTypes = {
     comment: PropTypes.string,
     updatedAt: PropTypes.string,
   }),
+  userId: PropTypes.string,
 }
 
 TripForm.defaultProps = {
@@ -223,6 +237,7 @@ TripForm.defaultProps = {
     comment: '',
     updatedAt: null,
   },
+  userId: '',
 }
 
 export default TripForm

@@ -1,16 +1,18 @@
 class ErrorHandler extends Error {
-  constructor(statusCode = 500, error = 'Sorry, something went wrong.') {
+  constructor(statusCode = 500, error) {
     super()
     this.statusCode = statusCode
 
-    if (typeof error === 'string') {
-      // Set the message normally
-      this.message = error
-    } else {
+    const { errors, message } = error
+
+    if (errors) {
       // Parse validation errors
-      this.message = Object.values(error)
+      this.message = Object.values(errors)
         .map(validationError => validationError.message)
         .join(', ')
+    } else {
+      // Set the message normally
+      this.message = message || 'Sorry, something went wrong. Try again later.'
     }
   }
 }

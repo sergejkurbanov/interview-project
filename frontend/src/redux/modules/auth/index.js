@@ -30,7 +30,7 @@ const authReducer = (state = defaultState, { type, payload }) => {
     case types.LOGIN_USER_ERROR:
       return { ...state, isLoginLoading: false }
 
-    // Get self actions
+    // Get actions
     case types.GET_SELF:
       return { ...state, isLoading: true }
 
