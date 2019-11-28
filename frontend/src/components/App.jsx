@@ -1,4 +1,5 @@
 import React from 'react'
+import Helmet from 'react-helmet'
 import { Switch, Route } from 'react-router-dom'
 import { useSelector } from 'react-redux'
 import { Container } from '@material-ui/core'
@@ -12,6 +13,10 @@ const App = () => {
   return (
     <>
       <Header />
+      <Helmet>
+        <meta charSet="utf-8" />
+        <title>Travel Maker</title>
+      </Helmet>
       <Container>
         <Switch>
           {routes.map(({ pvt, ...rest }) =>

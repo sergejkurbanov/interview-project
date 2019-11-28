@@ -9,9 +9,18 @@ It is a REST API built using [express.js](https://expressjs.com/)
 - Install [Node.js](https://nodejs.org/)
 - Install packages using `npm install`
 
-## How to run
+## Available Scripts
 
-For development, run using `npm start`
+In the project directory, you can run:
+
+### `npm run dev`
+
+Runs the app in the development mode.<br>
+
+### `npm run build`
+
+Builds the app for production to the `dist` folder.<br>
+The build is transpiled via babel and you can later run it using the `npm start` command.
 
 ## Features
 

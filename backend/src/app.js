@@ -13,12 +13,17 @@ import tripRouter from './routers/trips'
 // Initialize
 const app = express()
 connectDb(() => app.emit('ready'))
-const port = process.env.PORT
+const port = process.env.PORT || 1337
 
 // Middleware
 app.use(morgan('dev'))
 app.use(express.json())
-app.use(cors({ credentials: true, origin: 'http://localhost:3000' }))
+app.use(
+  cors({
+    credentials: true,
+    origin: process.env.ORIGIN || 'http://localhost:3000',
+  }),
+)
 app.use(cookieParser())
 
 // Route middleware

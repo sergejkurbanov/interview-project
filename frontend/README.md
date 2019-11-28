@@ -28,6 +28,10 @@ It correctly bundles React in production mode and optimizes the build for the be
 
 The build is minified and the filenames include the hashes.
 
+## Deploying
+
+Feel free to use your favourite deploy site. For example: [Netlify](https://www.netlify.com/)
+
 ## License
 
 [MIT](https://choosealicense.com/licenses/mit/)
