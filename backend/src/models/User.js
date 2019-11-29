@@ -121,7 +121,8 @@ userSchema.statics.findByTokenAndClearIt = async refreshToken => {
     return user
   } catch (err) {
     throw new ErrorHandler(401, {
-      message: 'Not authorized to access this resource',
+      message:
+        'Not authorized to access this resource. Make sure your cookies are enabled.',
     })
   }
 }

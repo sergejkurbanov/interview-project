@@ -25,5 +25,8 @@ export const store = createStore(
 )
 export const persistor = persistStore(store)
 
+// Logger middleware was left in on purpose to potentially debug the app during the presentation
+// Normally it would be omitted in production using process.env.NODE_ENV !== 'production'
+
 // Run saga middleware
 sagaMiddleware.run(rootSaga)

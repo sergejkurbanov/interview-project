@@ -49,7 +49,7 @@ router.get('/refresh', async (req, res, next) => {
       .cookie('refreshToken', newRefreshToken, { httpOnly: true })
       .send({ user: user.toClient() })
   } catch (error) {
-    next(new ErrorHandler(400, error))
+    next(new ErrorHandler(error.statusCode || 400, error))
   }
 })
 

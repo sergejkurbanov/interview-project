@@ -43,11 +43,11 @@ const TripForm = ({ trip, userId }) => {
   const [isEndDateValid, setEndDateValid] = useState(isUpdate)
 
   const handleStartDate = date => {
-    setStartDateValid(date.isValid())
+    setStartDateValid(date && date.isValid())
     setStartDate(date)
   }
   const handleEndDate = date => {
-    setEndDateValid(date.isValid())
+    setEndDateValid(date && date.isValid())
     setEndDate(date)
   }
 
@@ -131,6 +131,7 @@ const TripForm = ({ trip, userId }) => {
             <KeyboardDatePicker
               disableToolbar
               required
+              inputVariant="outlined"
               variant="inline"
               format="DD/MM/YYYY"
               margin="normal"
@@ -147,6 +148,7 @@ const TripForm = ({ trip, userId }) => {
             <KeyboardDatePicker
               disableToolbar
               required
+              inputVariant="outlined"
               variant="inline"
               format="DD/MM/YYYY"
               margin="normal"

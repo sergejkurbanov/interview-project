@@ -38,13 +38,13 @@ const DeleteUser = ({ id, name }) => {
       <DialogWrapper
         open={open}
         onClose={handleClose}
-        aria-labelledby="Delete trip modal"
+        aria-labelledby="Delete user modal"
       >
         <DialogTitle>Deleting user {name}</DialogTitle>
         <DialogContent>
           <Box mb={4}>
             <DialogContentText id="alert-dialog-description">
-              Are you sure? The trip will be forever lost.
+              Are you sure? The user will be forever lost.
             </DialogContentText>
           </Box>
         </DialogContent>
