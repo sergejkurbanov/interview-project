@@ -1,13 +1,14 @@
 import jwt from 'jsonwebtoken'
-import ErrorHandler from '../helpers/error'
-import User from '../models/User'
+import ErrorHandler from '../../helpers/error'
+import User from '../../models/User'
+import config from '../../config'
 
 const handleAuth = (requiredRoles = []) => async (req, _res, next) => {
   const { token } = req.cookies
 
   try {
     // Verify the user token
-    req.user = jwt.verify(token, process.env.JWT_SECRET)
+    req.user = jwt.verify(token, config.jwtSecret)
 
     // Set the real user role in case the token is outdated
     if (requiredRoles.length) {

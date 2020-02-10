@@ -42,6 +42,7 @@ const UserForm = ({ user }) => {
   const isAdmin = currentUser.role === ROLES.ADMIN.value
   const submitDisabled =
     !(name && email) || isLoading || (!isUpdate && !password)
+  const isOtherUser = user.id !== currentUser.id
 
   const handleSubmit = e => {
     e.preventDefault()
@@ -102,7 +103,7 @@ const UserForm = ({ user }) => {
             variant="outlined"
           />
 
-          {user.id !== currentUser.id && (
+          {isOtherUser && (
             <Box width="100%" mt={1} mb={1}>
               <InputLabel id="role-select">Role</InputLabel>
               <Select

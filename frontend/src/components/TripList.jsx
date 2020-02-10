@@ -14,17 +14,15 @@ import DeleteTrip from 'components/DeleteTrip'
 
 const TripList = ({ trips, userId }) => {
   const [expanded, setExpanded] = useState(false)
-  const handleChange = panel => (_, isExpanded) => {
+  const formatDate = date => moment(date).format('DD/MM/YYYY')
+  const getDayDiff = date => moment(date).diff(moment().startOf('day'), 'days')
+  const handleChange = panel => (_, isExpanded) =>
     setExpanded(isExpanded ? panel : false)
-  }
 
   return (
     <>
       {trips.map(trip => {
-        const inDays = moment(trip.startDate).diff(
-          moment().startOf('day'),
-          'days',
-        )
+        const inDays = getDayDiff(trip.startDate)
 
         return (
           <ExpansionPanel
@@ -72,9 +70,7 @@ const TripList = ({ trips, userId }) => {
                     color="primary"
                     style={{ fontSize: 30, marginRight: 10 }}
                   />
-                  <Typography>
-                    {moment(trip.startDate).format('DD/MM/YYYY')}
-                  </Typography>
+                  <Typography>{formatDate(trip.startDate)}</Typography>
                 </Box>
 
                 <Box
@@ -87,9 +83,7 @@ const TripList = ({ trips, userId }) => {
                     color="primary"
                     style={{ fontSize: 30, marginRight: 10 }}
                   />
-                  <Typography>
-                    {moment(trip.endDate).format('DD/MM/YYYY')}
-                  </Typography>
+                  <Typography>{formatDate(trip.endDate)}</Typography>
                 </Box>
 
                 {/* Trip actions */}

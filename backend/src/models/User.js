@@ -5,6 +5,7 @@ import jwt from 'jsonwebtoken'
 import uniqueValidator from 'mongoose-unique-validator'
 import { tripSchema } from './Trip'
 import ErrorHandler from '../helpers/error'
+import config from '../config'
 
 const userSchema = mongoose.Schema(
   {
@@ -69,10 +70,10 @@ userSchema.methods.generateAuthTokens = async function() {
   // Generate auth tokens for the user
   const user = this
   const { _id: id, role } = user
-  const token = jwt.sign({ id, role }, process.env.JWT_SECRET, {
+  const token = jwt.sign({ id, role }, config.jwtSecret, {
     expiresIn: 15 * 60, // 15 minutes expiration date
   })
-  const refreshToken = jwt.sign({ id }, process.env.REFRESH_TOKEN_SECRET, {
+  const refreshToken = jwt.sign({ id }, config.refreshTokenSecret, {
     expiresIn: 7 * 24 * 60 * 60, // 7 days expiration date
   })
   user.tokens = user.tokens.concat({ token: refreshToken })
@@ -82,12 +83,14 @@ userSchema.methods.generateAuthTokens = async function() {
   return [token, refreshToken]
 }
 
-userSchema.methods.toClient = function(omitTrips) {
+userSchema.methods.toClient = function({ shouldOmitTrips } = {}) {
   return {
     id: this._id,
     name: this.name,
     email: this.email,
-    trips: omitTrips ? undefined : this.trips.map(trip => trip.toClient()),
+    trips: shouldOmitTrips
+      ? undefined
+      : this.trips.map(trip => trip.toClient()),
     role: this.role,
   }
 }
@@ -106,7 +109,7 @@ userSchema.statics.findByCredentials = async (email, password) => {
 
 userSchema.statics.findByTokenAndClearIt = async refreshToken => {
   try {
-    const data = jwt.verify(refreshToken, process.env.REFRESH_TOKEN_SECRET)
+    const data = jwt.verify(refreshToken, config.refreshTokenSecret)
     const user = await User.findOne({
       _id: data.id,
       'tokens.token': refreshToken,
