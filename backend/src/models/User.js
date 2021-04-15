@@ -5,6 +5,7 @@ import jwt from 'jsonwebtoken'
 import uniqueValidator from 'mongoose-unique-validator'
 import { tripSchema } from './Trip'
 import ErrorHandler from '../helpers/error'
+import roles from '../helpers/roles'
 import config from '../config'
 
 const userSchema = mongoose.Schema(
@@ -44,8 +45,8 @@ const userSchema = mongoose.Schema(
     trips: [tripSchema],
     role: {
       type: String,
-      default: 'BASIC',
-      enum: ['BASIC', 'MANAGER', 'ADMIN'],
+      default: roles.BASIC,
+      enum: Object.values(roles),
     },
   },
   { timestamps: true },
