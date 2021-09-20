@@ -2,8 +2,6 @@
 
 Travel Maker is a full stack javascript project that helps people to better organize and plan their trips.
 
-You can find this app running online at: [https://travelmaker-fe.netlify.com/](https://travelmaker-fe.netlify.com/)
-
 ## Features and installation
 
 This project has two parts:
